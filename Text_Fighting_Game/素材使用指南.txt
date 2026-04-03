@@ -1,0 +1,182 @@
+游戏素材使用指南
+==================
+
+本游戏已使用 Java Swing 完成 GUI 化改造，当前使用的是占位符图形（颜色块和文字）。
+你可以按照以下说明添加真正的图片素材。
+
+一、素材准备
+------------
+
+1. 角色素材（建议尺寸 200x200 像素）：
+   - hero.png - 英雄角色图片
+   - enemy_shepherd.png - 牧羊人敌人
+   - enemy_assassin.png - 敏捷刺客
+   - enemy_tank.png - 重装坦克
+   - enemy_mage.png - 秘法师
+   - enemy_warrior.png - 初级战士
+
+2. UI 素材：
+   - health_bar_empty.png - 血条背景（空）
+   - health_bar_fill.png - 血条填充（红色）
+   - mana_bar_empty.png - 蓝条背景（空）
+   - mana_bar_fill.png - 蓝条填充（蓝色）
+   - attack_icon.png - 普通攻击图标
+   - power_attack_icon.png - 全力一击图标
+   - heal_icon.png - 生命汲取图标
+   - item_icon.png - 道具图标
+
+3. 背景素材：
+   - battle_background.jpg - 战斗场景背景
+   - login_background.jpg - 登录界面背景
+   - menu_background.jpg - 主菜单背景
+
+4. 道具图标（建议尺寸 32x32 或 64x64）：
+   - item_peach.png - 桃子
+   - item_egg.png - 煎蛋
+   - item_chicken.png - 花酿鸡
+   - item_fish.png - 黑背鲈鱼
+   - item_soup.png - 白玉汤
+
+
+二、推荐素材网站
+-----------------
+
+免费可商用素材网站：
+
+1. OpenGameArt (https://opengameart.org/)
+   - 大量免费游戏素材，支持搜索
+   - 包含像素风、写实风等各种风格
+
+2. Kenney.nl (https://kenney.nl/)
+   - 高质量游戏素材包
+   - CC0 协议，可免费商用
+
+3. Craftpix (https://craftpix.net/freebies/)
+   - 有免费和付费素材
+   - 质量很高
+
+4. Freepik (https://www.freepik.com/)
+   - 搜索"game character", "RPG sprite"等关键词
+
+5. itch.io Game Assets (https://itch.io/game-assets)
+   - 独立游戏开发者社区
+   - 很多优质素材
+
+搜索关键词建议：
+- RPG character sprite
+- Fantasy warrior icon
+- Health bar UI
+- Game button icon
+- Pixel art character
+- Fantasy monster
+
+
+三、替换素材步骤
+----------------
+
+1. 将素材文件放到项目目录下，例如创建文件夹：
+   Text_Fighting_Game/assets/
+
+2. 在 FightingGameGUI.java 中找到对应代码位置替换
+
+示例代码 - 替换角色图片：
+
+// 当前代码（约第 158 行）：
+imageLabel.setText(isPlayer ? "🧙‍♂️ 英雄" : "👹 敌人");
+
+// 替换为图片：
+ImageIcon icon;
+if (isPlayer) {
+    icon = new ImageIcon("assets/hero.png");
+} else {
+    // 根据敌人名字加载不同图片
+    String enemyName = enemy.getName();
+    switch (enemyName) {
+        case "牧羊人":
+            icon = new ImageIcon("assets/enemy_shepherd.png");
+            break;
+        case "敏捷刺客":
+            icon = new ImageIcon("assets/enemy_assassin.png");
+            break;
+        // ... 其他敌人
+        default:
+            icon = new ImageIcon("assets/enemy_default.png");
+    }
+}
+// 缩放图片到合适大小
+Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+imageLabel.setIcon(new ImageIcon(img));
+
+
+示例代码 - 替换背景：
+
+// 在 createBattlePanel() 方法中，添加：
+JLabel backgroundLabel = new JLabel();
+ImageIcon bgIcon = new ImageIcon("assets/battle_background.jpg");
+Image bgImg = bgIcon.getImage().getScaledInstance(1000, 700, Image.SCALE_SMOOTH);
+backgroundLabel.setIcon(new ImageIcon(bgImg));
+backgroundLabel.setLayout(new BorderLayout());
+setContentPane(backgroundLabel);
+
+
+示例代码 - 自定义血条样式：
+
+// 创建自定义血条外观
+public class CustomProgressBarUI extends BasicProgressBarUI {
+    private Color fillColor = Color.RED;
+    
+    @Override
+    protected void paintDeterminate(Graphics g, JComponent c) {
+        super.paintDeterminate(g, c);
+        // 自定义绘制逻辑
+    }
+}
+
+// 应用样式
+playerHPBar.setUI(new CustomProgressBarUI());
+
+
+四、运行游戏
+-----------
+
+1. 控制台版本（原有代码）：
+   运行 App.java
+
+2. GUI 版本（新版本）：
+   运行 itwu.GUIMain.java
+
+默认账号（可选择）：
+- 用户名：zhangsan 密码：123456
+- 用户名：lisi 密码：abcdef
+- 用户名：wangwu 密码：password
+
+五、技术说明
+-----------
+
+当前 GUI 实现使用的技术：
+- Java Swing - GUI 框架
+- CardLayout - 多页面切换
+- BoxLayout/FlowLayout/BorderLayout - 布局管理器
+- Timer - 敌人回合延时
+- JOptionPane - 对话框
+
+素材加载注意事项：
+1. 图片路径可以是相对路径或绝对路径
+2. 建议使用 PNG 格式支持透明背景
+3. 大图片需要缩放到合适尺寸
+4. 注意图片文件大小，避免加载过慢
+
+六、进阶功能建议
+---------------
+
+如果学有余力，可以尝试：
+1. 添加战斗动画效果
+2. 添加音效和背景音乐
+3. 使用更炫酷的粒子效果
+4. 添加角色动作帧动画
+5. 实现存档/读档功能
+6. 添加更多敌人和 BOSS
+7. 实现装备系统
+8. 添加技能特效
+
+祝你开发顺利！🎮
