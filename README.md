@@ -1,2 +1,2 @@
-# stud_project
+# study_project
 学习代码,仅供纪念
