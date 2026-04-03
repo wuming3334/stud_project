@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwu.Mapper.EmpMapper">
+    <!--useGeneratedKeys="true" keyProperty="id"-->
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        insert into emp(username, name, gender, phone, job, salary, image, entry_date, dept_id, create_time, update_time)
+        values (#{username}, #{name}, #{gender}, #{phone}, #{job}, #{salary},
+        #{image}, #{entryDate}, #{deptId}, #{createTime}, #{updateTime})
+    </insert>
+
+    <!--insert into emp
+        values (null, #{username}, null, #{name}, #{gender}, #{phone}, #{job}, #{salary},
+        #{image}, #{entryDate}, #{deptId}, #{createTime}, #{updateTime})-->
+    <!-- <if test="getExprList() != null">
+         <foreach collection="emp.getExprList()"
+                  insert into emp_expr
+                  values (null, #{empId}, #{begin}, #{end}, #{company}, #{job})
+     </foreach>
+     </if>-->
+    <!--
+ pageHelper分页插件实现
+ 只需要一个基础查询语句,分页插件会自动拼接limit
+    -->
+        <!--<select id="list" resultType="com.itwu.pojo.Emp">
+            select e.*,d.name deptName from  emp e
+            left join dept d on e.dept_id = d.id order by e.update_time desc
+        </select>-->
+<select id="list" resultType="com.itwu.pojo.Emp">
+    select e.*, d.name deptName
+    from emp e left join dept d on e.dept_id = d.id
+    <!--        <if test="(name or gender != null or '' ) or begin != null and end != null">
+    where
+    </if>-->
+    <where>
+        <if test="name != null and name != ''">
+            e.name like concat('%',#{name},'%')<!--使用sql语句中提供的concat拼接字符串,
+        这样可以避免''带来的转义,
+        使用if和where标签可以实现动态语句-->
+        </if>
+        <if test="gender != null">
+            <!--<if test="name != null and name != ''">
+                and
+            </if>-->
+            and e.gender = #{gender}
+        </if>
+        <if test="begin != null and end != null">
+            <!--<if test="name or gender != null or '' ">
+                and
+            </if>-->
+            and e.entry_date between #{begin} and #{end}
+        </if>
+    </where>
+    order by e.update_time desc
+</select>
+
+
+        <!--
+        // 分页查询,指定#{start},#{pageSize}
+        <select id="list" resultType="com.itwu.pojo.Emp">
+        select e.*,d.name deptName from  emp e
+            left join dept d on e.dept_id = d.id order by e.update_time desc limit #{start},#{pageSize};
+        </select>
+
+        原始分页实现方式,查询总记录数
+        <select id="getEmpCount" resultType="java.lang.Integer">
+            select count(*) from  emp  left join dept on emp.dept_id = dept.id;
+        </select>-->
+        </mapper>
